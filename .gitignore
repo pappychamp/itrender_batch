@@ -1,0 +1,31 @@
+# Python関連
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+# 環境変数ファイル
+.devcontainer/.env
+
+# IDEやエディタ関連
+.vscode/
+# ログファイル
+*.log
+# カバレッジレポート
+coverage.xml
+
+# キャッシュ
+.pytest_cache/
+.coverage
+*.coverage
+
+# 特定フォルダ,ファイル
+task/app/__pycache__/
+task/app/db/__pycache__/
+task/app/db/migrations/
+task/app/db/site_init.json
+task/app/db/alembic.ini
+task/app/logs/__pycache__/
+task/app/services/__pycache__/
+task/app/utils/__pycache__/
+task/env.txt
+push_to_ecr.sh
