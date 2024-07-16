@@ -1,9 +1,8 @@
 import asyncio
-import json
-import time
 
 from db.setting import Session
 from logs.logs_setting import logger
+from pydantic import ValidationError
 from services.data_mapping import (
     data_mapping,
     qiita_data_mapping,
@@ -15,7 +14,6 @@ from services.db_service import create_trend_data, get_site_id
 from utils.qiita import QiitaAPI
 from utils.youtube import YoutubeAPI
 from utils.zenn import ZennAPI
-from pydantic import ValidationError
 
 
 async def main():
@@ -26,7 +24,6 @@ async def main():
 
         async def fetch_youtube_data():
             async with Session() as session:
-                print(f"Session in task {asyncio.current_task()}: {session}")
                 videos_data = await youtube_api.fetch_video()
                 site_id = await get_site_id(session, site_name="youtube")
                 # データ処理
@@ -39,7 +36,6 @@ async def main():
 
         async def fetch_zenn_data():
             async with Session() as session:
-                print(f"Session in task {asyncio.current_task()}: {session}")
                 articles_data = await zenn_api.fetch_article()
                 site_id = await get_site_id(session, site_name="zenn")
                 # データ処理
@@ -52,7 +48,6 @@ async def main():
 
         async def fetch_qiita_data():
             async with Session() as session:
-                print(f"Session in task {asyncio.current_task()}: {session}")
                 articles_data = await qiita_api.fetch_article()
                 site_id = await get_site_id(session, site_name="qiita")
                 # データ処理
@@ -63,40 +58,28 @@ async def main():
                 response = await create_trend_data(session, validated_data)
                 return response
 
-        start = time.perf_counter()
-        response = await asyncio.gather(
+        response_list = await asyncio.gather(
             fetch_youtube_data(),
-            fetch_zenn_data(),
             fetch_qiita_data(),
+            fetch_zenn_data(),
+            return_exceptions=True,
         )
-        end1 = time.perf_counter()
-        print(end1 - start)
+        return response_list
 
-        print(response)
     except ValidationError as e:
-        logger.error(f"validation error発生:{e}")
+        logger.error(e)
     except Exception as e:
-        logger.error(f"error発生:{e}")
+        logger.error(e)
 
 
 async def handler():
     try:
-        await main()
-        print("$$$$$")
-
-        return {
-            "statusCode": 200,
-            "body": json.dumps(
-                {
-                    "message": "hello world",
-                }
-            ),
-        }
+        response_list = await main()
+        for i, response in enumerate(response_list):
+            if isinstance(response, Exception):
+                logger.error(f"Task {i} raised an exception: {response}")
     except Exception as e:
-        return {
-            "statusCode": 500,
-            "body": json.dumps({"message": e}),
-        }
+        logger.error(e)
 
 
 if __name__ == "__main__":

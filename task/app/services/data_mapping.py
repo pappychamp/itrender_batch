@@ -17,9 +17,8 @@ async def data_mapping(site_id, data_list, data_mapping_func):
     try:
         mapped_data = [data_mapping_func(site_id, data) for data in data_list[:20]]
         return mapped_data
-    except Exception:
-        logger.error("データ処理に失敗")
-        raise
+    except Exception as e:
+        logger.error(e)
 
 
 def zenn_data_mapping(site_id, article_data):

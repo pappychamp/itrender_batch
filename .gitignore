@@ -29,3 +29,5 @@ task/app/services/__pycache__/
 task/app/utils/__pycache__/
 task/env.txt
 push_to_ecr.sh
+
+prod.env

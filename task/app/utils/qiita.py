@@ -48,9 +48,8 @@ class QiitaAPI:
                     return {"articles": response}
                 else:
                     raise ValueError(f"データまたはentriesデータの中身が空です:{rss_response}")
-        except Exception:
-            logger.error("qiitaデータ取得に失敗")
-            raise
+        except Exception as e:
+            logger.error(e)
 
     async def fetch_rss(self, session):
         try:

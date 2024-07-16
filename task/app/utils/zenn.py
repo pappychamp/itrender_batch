@@ -17,6 +17,5 @@ class ZennAPI:
                 if not data or not data.get("articles"):
                     raise ValueError(f"データまたはarticlesデータの中身が空です:{data}")
                 return data
-            except Exception:
-                logger.error("zennデータ取得に失敗")
-                raise
+            except Exception as e:
+                logger.error(e)
