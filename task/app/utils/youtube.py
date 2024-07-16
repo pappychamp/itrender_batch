@@ -30,6 +30,5 @@ class YoutubeAPI:
                 )
                 response = await aiogoogle.as_api_key(request)
                 return response
-            except Exception:
-                logger.error("youtubeデータ取得に失敗")
-                raise
+            except Exception as e:
+                logger.error(e)

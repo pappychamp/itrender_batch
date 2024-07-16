@@ -1,10 +1,11 @@
-from dateutil import parser
 from db.models import Site, Tag, TrendData
-from db.setting import Session
 from logs.logs_setting import logger
-from services.data_validate import TrendDataModel
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
+
+# from dateutil import parser
+# from db.setting import Session
+# from services.data_validate import TrendDataModel
 
 
 async def get_or_create_tag(db_session, tag_name):
@@ -44,14 +45,10 @@ async def create_trend_data(db_session, trend_data_list):
         return {"status": "success"}
     except SQLAlchemyError as e:
         await db_session.rollback()
-        print(f"Error occurred: {e}")
-        logger.error("SQLAlchemyError発生")
-        raise
+        logger.error(e)
     except Exception as e:
         await db_session.rollback()
-        print(f"Error occurred: {e}")
-        logger.error("database処理に失敗")
-        raise
+        logger.error(e)
 
 
 async def get_site_id(db_session, site_name):
@@ -60,64 +57,63 @@ async def get_site_id(db_session, site_name):
         site_id = site_instance.scalar()
         return site_id
     except Exception as e:
-        print(f"Error occurred: {e}")
-        raise
+        logger.error(e)
 
 
-async def main():
-    try:
-        async with Session() as session:
-            print(session)
-            site_id = await get_site_id(session, "youtube")
-            sample_data = [
-                {
-                    "site_id": site_id,
-                    "title": "test",
-                    # "category": "",
-                    "published_at": parser.parse("2024-06-28T12:00:27Z"),
-                    "url": "",
-                    # "embed_html": None,
-                    "tags": [{"name": "test1"}, {"name": "test2"}],
-                },
-                {
-                    "site_id": site_id,
-                    "title": "test2",
-                    # "category": "",
-                    "published_at": parser.parse("2024-06-28T12:00:27Z"),
-                    "url": "",
-                    # "embed_html": None,
-                    "tags": [{"name": "test2"}, {"name": "test3"}],
-                },
-                {
-                    "site_id": site_id,
-                    "title": "test3",
-                    # "category": "",
-                    "published_at": parser.parse("2024-06-28T12:00:27Z"),
-                    "url": "",
-                    # "embed_html": None,
-                    # "tags": [{"name": "test2"}, {"name": "test3"}],
-                },
-            ]
-            valid_data = [TrendDataModel(**data).model_dump() for data in sample_data]
-            res = await create_trend_data(session, valid_data)
-            print(res)
-            # await create_trend_data(
-            #     session,
-            #     site_id,
-            #     "test",
-            #     parser.parse("2024-06-28T12:00:27Z"),
-            #     "music",
-            #     "https://test.com",
-            #     "<h1>",
-            #     ["Python", "自動化"],
-            # )
-    except Exception as e:
-        print("##########")
-        print(e)
-        print("##########")
+# async def main():
+#     try:
+#         async with Session() as session:
+#             print(session)
+#             site_id = await get_site_id(session, "youtube")
+#             sample_data = [
+#                 {
+#                     "site_id": site_id,
+#                     "title": "test",
+#                     # "category": "",
+#                     "published_at": parser.parse("2024-06-28T12:00:27Z"),
+#                     "url": "",
+#                     # "embed_html": None,
+#                     "tags": [{"name": "test1"}, {"name": "test2"}],
+#                 },
+#                 {
+#                     "site_id": site_id,
+#                     "title": "test2",
+#                     # "category": "",
+#                     "published_at": parser.parse("2024-06-28T12:00:27Z"),
+#                     "url": "",
+#                     # "embed_html": None,
+#                     "tags": [{"name": "test2"}, {"name": "test3"}],
+#                 },
+#                 {
+#                     "site_id": site_id,
+#                     "title": "test3",
+#                     # "category": "",
+#                     "published_at": parser.parse("2024-06-28T12:00:27Z"),
+#                     "url": "",
+#                     # "embed_html": None,
+#                     # "tags": [{"name": "test2"}, {"name": "test3"}],
+#                 },
+#             ]
+#             valid_data = [TrendDataModel(**data).model_dump() for data in sample_data]
+#             res = await create_trend_data(session, valid_data)
+#             print(res)
+#             # await create_trend_data(
+#             #     session,
+#             #     site_id,
+#             #     "test",
+#             #     parser.parse("2024-06-28T12:00:27Z"),
+#             #     "music",
+#             #     "https://test.com",
+#             #     "<h1>",
+#             #     ["Python", "自動化"],
+#             # )
+#     except Exception as e:
+#         print("##########")
+#         print(e)
+#         print("##########")
 
 
-if __name__ == "__main__":
-    import asyncio
+# if __name__ == "__main__":
+#     import asyncio
 
-    asyncio.run(main())
+#     asyncio.run(main())
