@@ -1,11 +1,6 @@
 from db.models import Site, Tag, TrendData
-from logs.logs_setting import logger
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
-
-# from dateutil import parser
-# from db.setting import Session
-# from services.data_validate import TrendDataModel
 
 
 async def get_or_create_tag(db_session, tag_name):
@@ -43,12 +38,12 @@ async def create_trend_data(db_session, trend_data_list):
         for new_data in new_trends:
             await db_session.refresh(new_data)
         return {"status": "success"}
-    except SQLAlchemyError as e:
+    except SQLAlchemyError:
         await db_session.rollback()
-        logger.error(e)
-    except Exception as e:
+        raise
+    except Exception:
         await db_session.rollback()
-        logger.error(e)
+        raise
 
 
 async def get_site_id(db_session, site_name):
@@ -56,8 +51,8 @@ async def get_site_id(db_session, site_name):
         site_instance = await db_session.execute(select(Site.id).filter_by(name=site_name))
         site_id = site_instance.scalar()
         return site_id
-    except Exception as e:
-        logger.error(e)
+    except Exception:
+        raise
 
 
 # async def main():
