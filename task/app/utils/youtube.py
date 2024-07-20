@@ -1,11 +1,7 @@
 import os
 
-# import google_auth_oauthlib.flow
-# import googleapiclient.discovery
-# import googleapiclient.errors
 from aiogoogle import Aiogoogle
 from aiogoogle.auth.creds import ApiKey
-from logs.logs_setting import logger
 
 API_KEY = os.environ.get("YOUTUBE_API_KEY")
 
@@ -30,5 +26,5 @@ class YoutubeAPI:
                 )
                 response = await aiogoogle.as_api_key(request)
                 return response
-            except Exception as e:
-                logger.error(e)
+            except Exception:
+                raise

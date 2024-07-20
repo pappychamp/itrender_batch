@@ -4,7 +4,6 @@ import re
 
 import aiohttp
 import feedparser
-from logs.logs_setting import logger
 
 ACCESS_TOKEN = os.environ.get("QIITA_ACCESS_TOKEN")
 
@@ -48,8 +47,8 @@ class QiitaAPI:
                     return {"articles": response}
                 else:
                     raise ValueError(f"データまたはentriesデータの中身が空です:{rss_response}")
-        except Exception as e:
-            logger.error(e)
+        except Exception:
+            raise
 
     async def fetch_rss(self, session):
         try:
@@ -73,12 +72,3 @@ class QiitaAPI:
                 return data
         except Exception:
             raise
-
-
-# async def main():
-#     api = QiitaAPI()
-#     await api.fetch_article()
-
-
-# if __name__ == "__main__":
-#     asyncio.run(main())

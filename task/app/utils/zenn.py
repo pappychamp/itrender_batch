@@ -1,5 +1,4 @@
 import aiohttp
-from logs.logs_setting import logger
 
 
 class ZennAPI:
@@ -17,5 +16,5 @@ class ZennAPI:
                 if not data or not data.get("articles"):
                     raise ValueError(f"データまたはarticlesデータの中身が空です:{data}")
                 return data
-            except Exception as e:
-                logger.error(e)
+            except Exception:
+                raise
