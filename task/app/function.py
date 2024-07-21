@@ -1,7 +1,8 @@
 import asyncio
-from services.data_fetch import fetch_youtube_data, fetch_qiita_data, fetch_zenn_data
+
 from logs.logs_setting import logger
 from logs.sentry_setting import init_sentry
+from services.data_fetch import fetch_qiita_data, fetch_youtube_data, fetch_zenn_data
 
 
 async def main():
