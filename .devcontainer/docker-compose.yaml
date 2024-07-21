@@ -27,7 +27,9 @@ services:
     #   - ".docker/mysql:/home"
     ports:
       - 5432:5432
-    volumes: # 名前付きボリュームの割り当て定義を追加
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  
+    # 名前付きボリュームの割り当て定義を追加
       - db-data:/var/lib/postgresql/data
 
 volumes:
