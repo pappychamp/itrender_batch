@@ -1,10 +1,10 @@
 services:
-  batch:
+  batch_devcontainer:
     build:
       context: ..
       dockerfile: .devcontainer/dockerfile
-    image: batch
-    container_name: batch_container
+    image: batch_devcontainer
+    container_name: batch_devcontainer
     tty: true
     volumes:
       - ..:/workspace
