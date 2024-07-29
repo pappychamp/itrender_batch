@@ -39,15 +39,16 @@ def youtube_data_mapping(site_id, video_data, ranking):
     snippet = video_data.get("snippet", {})
     category_id = snippet.get("categoryId")
     title = snippet.get("title")
-    tags = snippet.get("tags", {})
+    tags = snippet.get("tags", [])
     published_at = snippet.get("publishedAt")
     embed_html = video_data.get("player").get("embedHtml")
+    unique_tags = list(set(tags))
 
     video_data_dict = {
         "site_id": site_id,
         "title": title,
         "ranking": ranking,
-        "tags": [{"name": tag} for tag in tags],
+        "tags": [{"name": tag} for tag in unique_tags],
         "published_at": parser.parse(published_at),
         "embed_html": embed_html,
         "category": category_id,
@@ -60,12 +61,13 @@ def qiita_data_mapping(site_id, article_data, ranking):
     tags = article_data.get("tags", [])
     url = article_data.get("link", "")
     published_at = article_data.get("updated")
+    unique_tags = list({tag["name"]: tag for tag in tags}.values())
 
     article_data_dict = {
         "site_id": site_id,
         "title": title,
         "ranking": ranking,
-        "tags": tags,
+        "tags": unique_tags,
         "url": url,
         "published_at": parser.parse(published_at),
     }
