@@ -1,3 +1,5 @@
+import asyncio
+
 import aiohttp
 
 
@@ -18,3 +20,13 @@ class ZennAPI:
                 return data
             except Exception:
                 raise
+
+
+async def main():
+    instance = ZennAPI()
+    data = await instance.fetch_article()
+    print(type(data))
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

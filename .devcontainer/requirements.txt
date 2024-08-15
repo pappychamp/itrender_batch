@@ -13,6 +13,8 @@ python-dateutil==2.9.0.post0
 pydantic==2.8.2
 pytz==2024.1
 sentry-sdk==2.10.0
+pytrends==4.9.2
+beautifulsoup4==4.12.3
 # テスト
 pytest==8.2.2
 pytest-mock==3.14.0
