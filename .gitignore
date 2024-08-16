@@ -4,8 +4,7 @@ __pycache__/
 *.pyo
 *.pyd
 # 環境変数ファイル
-.devcontainer/.env
-prod.env
+env/
 # IDEやエディタ関連
 .vscode/
 # ログファイル
@@ -17,6 +16,5 @@ coverage.xml
 .coverage
 *.coverage
 # 特定フォルダ,ファイル
-task/env.txt
 push_to_ecr.sh
-.devcontainer/init.sql
+.venv
