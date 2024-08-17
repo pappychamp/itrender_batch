@@ -3,18 +3,21 @@ from logs.logs_setting import logger
 from services.data_mapping import (
     data_mapping,
     qiita_data_mapping,
+    yahoo_data_mapping,
     youtube_data_mapping,
     zenn_data_mapping,
 )
 from services.data_validate import TrendDataModel
 from services.db_service import create_trend_data, get_site_id
 from utils.qiita import QiitaAPI
+from utils.yahoo import YahooAPI
 from utils.youtube import YoutubeAPI
 from utils.zenn import ZennAPI
 
 youtube_api = YoutubeAPI()
 zenn_api = ZennAPI()
 qiita_api = QiitaAPI()
+yahoo_api = YahooAPI()
 
 
 async def fetch_data(api_fetch_func, site_name, data_mapping_func):
@@ -44,3 +47,7 @@ async def fetch_zenn_data():
 
 async def fetch_qiita_data():
     return await fetch_data(qiita_api.fetch_article, site_name="qiita", data_mapping_func=qiita_data_mapping)
+
+
+async def fetch_yahoo_data():
+    return await fetch_data(yahoo_api.fetch_article, site_name="yahoo", data_mapping_func=yahoo_data_mapping)

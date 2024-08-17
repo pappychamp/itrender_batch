@@ -1,15 +1,18 @@
 from asyncio import current_task
 
 import pytest
-from db.models import Tag
-from db.setting import Base
-from services.db_service import get_or_create_tag
+
+# from app.db.models import Tag
+from app.db.setting import Base
+
+# from app.services.db_service import get_or_create_tag
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_scoped_session,
     create_async_engine,
 )
-from sqlalchemy.future import select
+
+# from sqlalchemy.future import select
 from sqlalchemy.orm import sessionmaker
 
 DB_URL = "postgresql+psycopg://postgres:postgres@db:5432/db-test"

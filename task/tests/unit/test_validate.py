@@ -1,8 +1,9 @@
-import pytest
 from datetime import datetime
 from uuid import uuid4
+
+import pytest
+from app.services.data_validate import TrendDataModel
 from pydantic import ValidationError
-from services.data_validate import TrendDataModel
 
 
 def test_valid_trend_data_model():
