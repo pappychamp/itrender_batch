@@ -72,3 +72,18 @@ def qiita_data_mapping(site_id, article_data, ranking):
         "published_at": parser.parse(published_at),
     }
     return article_data_dict
+
+
+def yahoo_data_mapping(site_id, article_data, ranking):
+    title = article_data.get("title")
+    url = article_data.get("url", "")
+    published_at = article_data.get("published_at")
+
+    article_data_dict = {
+        "site_id": site_id,
+        "title": title,
+        "ranking": ranking,
+        "url": url,
+        "published_at": parser.parse(published_at),
+    }
+    return article_data_dict
