@@ -20,8 +20,8 @@ async def create_trend_data(db_session, trend_data_list):
             new_data = TrendData(
                 site_id=trend_data["site_id"],
                 title=trend_data["title"],
-                ranking=trend_data.get("ranking"),
-                published_at=trend_data["published_at"],
+                ranking=trend_data["ranking"],
+                published_at=trend_data.get("published_at"),
                 category=trend_data.get("category"),
                 url=trend_data.get("url"),
                 embed_html=trend_data.get("embed_html"),

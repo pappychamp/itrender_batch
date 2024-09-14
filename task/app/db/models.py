@@ -54,7 +54,7 @@ class TrendData(Base):
     title = Column(String(255), nullable=False)
     ranking = Column(Integer, nullable=False)
     category = Column(String(255), nullable=True)
-    published_at = Column(DateTime(timezone=True), nullable=False)
+    published_at = Column(DateTime(timezone=True), nullable=True)
     url = Column(String(255), nullable=True)
     embed_html = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), default=datetime.now(pytz.timezone("Asia/Tokyo")), nullable=False)
