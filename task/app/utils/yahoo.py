@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 class YahooAPI:
 
     def __init__(self) -> None:
-        self.url = "https://news.yahoo.co.jp/ranking/access/news"
+        self.url = "https://news.yahoo.co.jp/ranking/access/news/it-science"
         self.current_year = datetime.now().year
 
     async def format_time(self, time):

@@ -31,7 +31,7 @@ async def test_yahoo_fetch_article_success(yahoo_api):
         """
     with aioresponses() as m:
         # payloadはJSONデータを返すときに使用するものでありHTMLコンテンツを返すにはbodyを使う必要がある
-        m.get("https://news.yahoo.co.jp/ranking/access/news", body=sample_html)
+        m.get("https://news.yahoo.co.jp/ranking/access/news/it-science", body=sample_html)
         # テスト
         response = await yahoo_api.fetch_article()
     assert response == {
@@ -68,7 +68,7 @@ async def test_yahoo_fetch_article_no_newsFeed_item_title_class_skip(yahoo_api):
         """
     with aioresponses() as m:
         # payloadはJSONデータを返すときに使用するものでありHTMLコンテンツを返すにはbodyを使う必要がある
-        m.get("https://news.yahoo.co.jp/ranking/access/news", body=sample_html)
+        m.get("https://news.yahoo.co.jp/ranking/access/news/it-science", body=sample_html)
         # テスト
         response = await yahoo_api.fetch_article()
     assert response == {
@@ -100,7 +100,7 @@ async def test_yahoo_fetch_article_no_time_tag_skip(yahoo_api):
         """
     with aioresponses() as m:
         # payloadはJSONデータを返すときに使用するものでありHTMLコンテンツを返すにはbodyを使う必要がある
-        m.get("https://news.yahoo.co.jp/ranking/access/news", body=sample_html)
+        m.get("https://news.yahoo.co.jp/ranking/access/news/it-science", body=sample_html)
         # テスト
         response = await yahoo_api.fetch_article()
     assert response == {
@@ -125,7 +125,7 @@ async def test_yahoo_fetch_article_no_a_tag_skip(yahoo_api):
         """
     with aioresponses() as m:
         # payloadはJSONデータを返すときに使用するものでありHTMLコンテンツを返すにはbodyを使う必要がある
-        m.get("https://news.yahoo.co.jp/ranking/access/news", body=sample_html)
+        m.get("https://news.yahoo.co.jp/ranking/access/news/it-science", body=sample_html)
         # テスト
         with pytest.raises(ValueError, match="データまたはarticlesデータの中身が空です"):
             await yahoo_api.fetch_article()
@@ -138,7 +138,7 @@ async def test_yahoo_fetch_article_exception(yahoo_api):
     """
     # requests.getをモック(例外発生)
     with aioresponses() as m:
-        m.get("https://news.yahoo.co.jp/ranking/access/news", exception=aiohttp.ClientError())
+        m.get("https://news.yahoo.co.jp/ranking/access/news/it-science", exception=aiohttp.ClientError())
 
         # テスト
         with pytest.raises(aiohttp.ClientError):
