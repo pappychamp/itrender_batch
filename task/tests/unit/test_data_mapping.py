@@ -38,8 +38,8 @@ async def test_data_mapping_youtube():
     # テスト用の入力データ
     site_id = uuid4()
     video_data_list = [
-        {"snippet": {"categoryId": "123", "title": "Test Video 1", "tags": ["tag1", "tag2"], "publishedAt": "2024-07-15T12:00:00Z"}, "player": {"embedHtml": "<iframe></iframe>"}},
-        {"snippet": {"categoryId": "456", "title": "Test Video 2", "publishedAt": "2024-07-16T12:00:00Z"}, "player": {"embedHtml": "<iframe></iframe>"}},
+        {"id": "test_id_1", "snippet": {"categoryId": "123", "title": "Test Video 1", "tags": ["tag1", "tag2"], "publishedAt": "2024-07-15T12:00:00Z"}, "player": {"embedHtml": "<iframe></iframe>"}},
+        {"id": "test_id_2", "snippet": {"categoryId": "456", "title": "Test Video 2", "publishedAt": "2024-07-16T12:00:00Z"}, "player": {"embedHtml": "<iframe></iframe>"}},
     ]
 
     # data_mapping_funcにyoutube_data_mappingを使用
@@ -50,7 +50,8 @@ async def test_data_mapping_youtube():
     for data in mapped_data:
         assert "site_id" in data
         assert "title" in data
-        assert "tags" in data
+        assert isinstance(data["tags"], list)
+        assert "url" in data
         assert "published_at" in data
         assert "embed_html" in data
         assert "category" in data
@@ -116,6 +117,7 @@ async def test_data_mapping_youtube_duplicate_tag():
     site_id = uuid4()
     video_data_list = [
         {
+            "id": "test_id_1",
             "snippet": {"categoryId": "123", "title": "Test Video 1", "tags": ["tag1", "tag2", "tag2"], "publishedAt": "2024-07-15T12:00:00Z"},
             "player": {"embedHtml": "<iframe></iframe>"},
         },

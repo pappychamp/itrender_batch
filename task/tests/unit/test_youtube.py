@@ -16,10 +16,9 @@ async def test_youtube_fetch_video_success(mocker, youtube_api):
     mock_response = {
         "items": [
             {
+                "id": "test_id",
                 "snippet": {"title": "Example Video"},
                 "player": {},
-                "topicDetails": {},
-                "statistics": {},
             },
         ],
     }
