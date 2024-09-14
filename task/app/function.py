@@ -4,6 +4,8 @@ from logs.logs_setting import logger
 from logs.sentry_setting import init_sentry
 from services.data_fetch import (
     fetch_qiita_data,
+    fetch_techplus_data,
+    fetch_thinkit_data,
     fetch_yahoo_data,
     fetch_youtube_data,
     fetch_zenn_data,
@@ -17,6 +19,8 @@ async def main():
             fetch_qiita_data(),
             fetch_zenn_data(),
             fetch_yahoo_data(),
+            fetch_thinkit_data(),
+            fetch_techplus_data(),
             # 上記処理のどれかで例外が起きても他の処理を続行する。(デフォルトのfalseの場合他の処理も途中で止まる。)
             return_exceptions=True,
         )

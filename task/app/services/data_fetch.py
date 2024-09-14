@@ -3,6 +3,8 @@ from logs.logs_setting import logger
 from services.data_mapping import (
     data_mapping,
     qiita_data_mapping,
+    techplus_data_mapping,
+    thinkit_data_mapping,
     yahoo_data_mapping,
     youtube_data_mapping,
     zenn_data_mapping,
@@ -10,6 +12,8 @@ from services.data_mapping import (
 from services.data_validate import TrendDataModel
 from services.db_service import create_trend_data, get_site_id
 from utils.qiita import QiitaAPI
+from utils.techplus import TechplusAPI
+from utils.thinkit import ThinkitAPI
 from utils.yahoo import YahooAPI
 from utils.youtube import YoutubeAPI
 from utils.zenn import ZennAPI
@@ -18,6 +22,8 @@ youtube_api = YoutubeAPI()
 zenn_api = ZennAPI()
 qiita_api = QiitaAPI()
 yahoo_api = YahooAPI()
+thinkit_api = ThinkitAPI()
+techplus_api = TechplusAPI()
 
 
 async def fetch_data(api_fetch_func, site_name, data_mapping_func):
@@ -51,3 +57,11 @@ async def fetch_qiita_data():
 
 async def fetch_yahoo_data():
     return await fetch_data(yahoo_api.fetch_article, site_name="yahoo", data_mapping_func=yahoo_data_mapping)
+
+
+async def fetch_thinkit_data():
+    return await fetch_data(thinkit_api.fetch_article, site_name="thinkit", data_mapping_func=thinkit_data_mapping)
+
+
+async def fetch_techplus_data():
+    return await fetch_data(techplus_api.fetch_article, site_name="techplus", data_mapping_func=techplus_data_mapping)

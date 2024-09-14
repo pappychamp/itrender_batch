@@ -89,3 +89,29 @@ def yahoo_data_mapping(site_id, article_data, ranking):
         "published_at": parser.parse(published_at),
     }
     return article_data_dict
+
+
+def thinkit_data_mapping(site_id, article_data, ranking):
+    title = article_data.get("title")
+    url = article_data.get("url", "")
+
+    article_data_dict = {
+        "site_id": site_id,
+        "title": title,
+        "ranking": ranking,
+        "url": f"https://thinkit.co.jp{url}",
+    }
+    return article_data_dict
+
+
+def techplus_data_mapping(site_id, article_data, ranking):
+    title = article_data.get("title")
+    url = article_data.get("url", "")
+
+    article_data_dict = {
+        "site_id": site_id,
+        "title": title,
+        "ranking": ranking,
+        "url": f"https://news.mynavi.jp{url}",
+    }
+    return article_data_dict
