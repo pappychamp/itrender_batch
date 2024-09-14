@@ -113,7 +113,7 @@ async def test_yahoo_fetch_article_no_time_tag_skip(yahoo_api):
 @pytest.mark.asyncio
 async def test_yahoo_fetch_article_no_a_tag_skip(yahoo_api):
     """
-    fetch_articleメソッドのtimeタグがない場合スキップ
+    fetch_articleメソッドのaタグがない場合ValueError
     """
     # サンプルHTMLを用意
     sample_html = """
