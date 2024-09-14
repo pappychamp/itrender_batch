@@ -23,6 +23,7 @@ class YoutubeAPI:
                     regionCode="JP",
                     hl="ja",
                     maxResults=20,
+                    videoCategoryId=28,
                 )
                 response = await aiogoogle.as_api_key(request)
                 return response
