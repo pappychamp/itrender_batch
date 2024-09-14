@@ -41,6 +41,7 @@ def youtube_data_mapping(site_id, video_data, ranking):
     title = snippet.get("title")
     tags = snippet.get("tags", [])
     published_at = snippet.get("publishedAt")
+    url = f'https://www.youtube.com/watch?v={video_data.get("id","")}'
     embed_html = video_data.get("player").get("embedHtml")
     unique_tags = list(set(tags))
 
@@ -49,6 +50,7 @@ def youtube_data_mapping(site_id, video_data, ranking):
         "title": title,
         "ranking": ranking,
         "tags": [{"name": tag} for tag in unique_tags],
+        "url": url,
         "published_at": parser.parse(published_at),
         "embed_html": embed_html,
         "category": category_id,

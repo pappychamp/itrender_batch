@@ -18,11 +18,12 @@ class YoutubeAPI:
             try:
                 youtube = await aiogoogle.discover(self.youtube_api_name, self.youtube_api_version)
                 request = youtube.videos.list(
-                    part="snippet,player,topicDetails,statistics",
+                    part="snippet,player",
                     chart="mostPopular",
                     regionCode="JP",
                     hl="ja",
                     maxResults=20,
+                    videoCategoryId=28,
                 )
                 response = await aiogoogle.as_api_key(request)
                 return response
