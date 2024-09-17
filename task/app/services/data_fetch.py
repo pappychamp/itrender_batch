@@ -38,7 +38,7 @@ async def fetch_data(api_fetch_func, site_name, data_mapping_func):
             validated_data = [TrendDataModel(**data).model_dump() for data in mapped_data]
             # 保存
             response = await create_trend_data(session, validated_data)
-            return response
+            return {site_name: response}
     except Exception as e:
         logger.error(e, exc_info=True)
 
