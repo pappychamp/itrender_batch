@@ -219,3 +219,65 @@ async def test_fetch_article_network_error(mocker, qiita_api):
             mocker.patch.object(QiitaAPI, "fetch_rss", side_effect=ValueError("RSSフィードの取得に失敗しました"))
             with pytest.raises(ValueError, match="RSSフィードの取得に失敗しました"):
                 await qiita_api.fetch_article()
+
+
+@pytest.mark.asyncio
+async def test_fetch_article_image_success(qiita_api):
+    """
+    fetch_article_imageメソッドの正常テスト
+    """
+    # サンプルURLを用意
+    sample_url = "https://qiita.com/test/items/test"
+    # サンプルHTMLを用意
+    sample_html = """
+        <html>
+            <head>
+                <meta property="og:image" content="test_content">
+            </head>
+        </html>
+        """
+
+    with aioresponses() as m:
+        # payloadはJSONデータを返すときに使用するものでありHTMLコンテンツを返すにはbodyを使う必要がある
+        m.get(sample_url, body=sample_html)
+        # テスト
+        response = await qiita_api.fetch_article_image(sample_url)
+    assert response == "test_content"
+
+
+@pytest.mark.asyncio
+async def test_fetch_article_image_no_a_tag(qiita_api):
+    """
+    fetch_article_imageメソッドのmetaタグがない場合の正常テスト
+    """
+    # サンプルURLを用意
+    sample_url = "https://qiita.com/test/items/test"
+    # サンプルHTMLを用意
+    sample_html = """
+        <html>
+            <head>
+                <metas property="og:image" content="test_content">
+            </head>
+        </html>
+        """
+
+    with aioresponses() as m:
+        # payloadはJSONデータを返すときに使用するものでありHTMLコンテンツを返すにはbodyを使う必要がある
+        m.get(sample_url, body=sample_html)
+        # テスト
+        response = await qiita_api.fetch_article_image(sample_url)
+    assert response is None
+
+
+@pytest.mark.asyncio
+async def test_fetch_article_image_exception(qiita_api):
+    """
+    fetch_article_imageメソッドの例外発生時のテスト
+    """
+    sample_url = "https://qiita.com/test/items/test"
+
+    with aioresponses() as m:
+        m.get(sample_url, exception=aiohttp.ClientError())
+        # テスト
+        with pytest.raises(aiohttp.ClientError):
+            await qiita_api.fetch_article_image(sample_url)

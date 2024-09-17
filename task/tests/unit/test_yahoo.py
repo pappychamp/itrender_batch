@@ -143,3 +143,65 @@ async def test_yahoo_fetch_article_exception(yahoo_api):
         # テスト
         with pytest.raises(aiohttp.ClientError):
             await yahoo_api.fetch_article()
+
+
+@pytest.mark.asyncio
+async def test_fetch_article_image_success(yahoo_api):
+    """
+    fetch_article_imageメソッドの正常テスト
+    """
+    # サンプルURLを用意
+    sample_url = "https://yahoo.com/test/items/test"
+    # サンプルHTMLを用意
+    sample_html = """
+        <html>
+            <head>
+                <meta property="og:image" content="test_content">
+            </head>
+        </html>
+        """
+
+    with aioresponses() as m:
+        # payloadはJSONデータを返すときに使用するものでありHTMLコンテンツを返すにはbodyを使う必要がある
+        m.get(sample_url, body=sample_html)
+        # テスト
+        response = await yahoo_api.fetch_article_image(sample_url)
+    assert response == "test_content"
+
+
+@pytest.mark.asyncio
+async def test_fetch_article_image_no_a_tag(yahoo_api):
+    """
+    fetch_article_imageメソッドのmetaタグがない場合の正常テスト
+    """
+    # サンプルURLを用意
+    sample_url = "https://yahoo.com/test/items/test"
+    # サンプルHTMLを用意
+    sample_html = """
+        <html>
+            <head>
+                <metas property="og:image" content="test_content">
+            </head>
+        </html>
+        """
+
+    with aioresponses() as m:
+        # payloadはJSONデータを返すときに使用するものでありHTMLコンテンツを返すにはbodyを使う必要がある
+        m.get(sample_url, body=sample_html)
+        # テスト
+        response = await yahoo_api.fetch_article_image(sample_url)
+    assert response is None
+
+
+@pytest.mark.asyncio
+async def test_fetch_article_image_exception(yahoo_api):
+    """
+    fetch_article_imageメソッドの例外発生時のテスト
+    """
+    sample_url = "https://yahoo.com/test/items/test"
+
+    with aioresponses() as m:
+        m.get(sample_url, exception=aiohttp.ClientError())
+        # テスト
+        with pytest.raises(aiohttp.ClientError):
+            await yahoo_api.fetch_article_image(sample_url)
