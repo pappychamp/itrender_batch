@@ -38,6 +38,25 @@ class TechplusAPI:
             except Exception:
                 raise
 
+    async def fetch_article_image(self, url) -> str | None:
+        """
+        スクレイピングによるimageの取得
+        """
+        async with aiohttp.ClientSession() as session:
+            try:
+                async with session.get(url) as response:
+
+                    response.raise_for_status()
+                    html = await response.text()
+                    soup = BeautifulSoup(html, "html.parser")
+                    ogp_image = soup.find("meta", attrs={"property": "og:image"})
+                    if ogp_image:
+                        return ogp_image.get("content")
+                    else:
+                        return
+            except Exception:
+                raise
+
 
 async def main():
     instance = TechplusAPI()
