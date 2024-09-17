@@ -1,4 +1,15 @@
 from dateutil import parser
+from utils.qiita import QiitaAPI
+from utils.techplus import TechplusAPI
+from utils.thinkit import ThinkitAPI
+from utils.yahoo import YahooAPI
+from utils.zenn import ZennAPI
+
+zenn_api = ZennAPI()
+qiita_api = QiitaAPI()
+yahoo_api = YahooAPI()
+thinkit_api = ThinkitAPI()
+techplus_api = TechplusAPI()
 
 
 async def data_mapping(site_id, data_list, data_mapping_func):
@@ -14,17 +25,19 @@ async def data_mapping(site_id, data_list, data_mapping_func):
         mapped_data: データ処理後のデータ
     """
     try:
-        mapped_data = [data_mapping_func(site_id, data, index) for index, data in enumerate(data_list[:20], start=1)]
+        mapped_data = [await data_mapping_func(site_id, data, index) for index, data in enumerate(data_list[:20], start=1)]
         return mapped_data
     except Exception:
         raise
 
 
-def zenn_data_mapping(site_id, article_data, ranking):
+async def zenn_data_mapping(site_id, article_data, ranking):
     title = article_data.get("title")
-    url = f"https://zenn.dev{article_data.get('path')}"
+    path = article_data.get("path", "")
+    url = f"https://zenn.dev{path}"
     published_at = article_data.get("published_at")
 
+    # 共通のデータ部分
     article_data_dict = {
         "site_id": site_id,
         "title": title,
@@ -32,10 +45,23 @@ def zenn_data_mapping(site_id, article_data, ranking):
         "url": url,
         "published_at": parser.parse(published_at),
     }
+
+    # 追加データ取得
+    if path:
+        image_and_tag_dict = await zenn_api.fetch_article_image_and_tag(url)
+        tags = image_and_tag_dict.get("tags", [])
+        unique_tags = list(set(tags))
+        article_data_dict.update(
+            {
+                "tags": [{"name": tag} for tag in unique_tags],
+                "embed_html": image_and_tag_dict.get("image_url"),
+            }
+        )
+
     return article_data_dict
 
 
-def youtube_data_mapping(site_id, video_data, ranking):
+async def youtube_data_mapping(site_id, video_data, ranking):
     snippet = video_data.get("snippet", {})
     category_id = snippet.get("categoryId")
     title = snippet.get("title")
@@ -58,7 +84,7 @@ def youtube_data_mapping(site_id, video_data, ranking):
     return video_data_dict
 
 
-def qiita_data_mapping(site_id, article_data, ranking):
+async def qiita_data_mapping(site_id, article_data, ranking):
     title = article_data.get("title")
     tags = article_data.get("tags", [])
     url = article_data.get("link", "")
@@ -73,10 +99,15 @@ def qiita_data_mapping(site_id, article_data, ranking):
         "url": url,
         "published_at": parser.parse(published_at),
     }
+
+    # 追加データ取得
+    if url:
+        image_url = await qiita_api.fetch_article_image(url)
+        article_data_dict.update({"embed_html": image_url})
     return article_data_dict
 
 
-def yahoo_data_mapping(site_id, article_data, ranking):
+async def yahoo_data_mapping(site_id, article_data, ranking):
     title = article_data.get("title")
     url = article_data.get("url", "")
     published_at = article_data.get("published_at")
@@ -88,30 +119,44 @@ def yahoo_data_mapping(site_id, article_data, ranking):
         "url": url,
         "published_at": parser.parse(published_at),
     }
+    # 追加データ取得
+    if url:
+        image_url = await yahoo_api.fetch_article_image(url)
+        article_data_dict.update({"embed_html": image_url})
     return article_data_dict
 
 
-def thinkit_data_mapping(site_id, article_data, ranking):
+async def thinkit_data_mapping(site_id, article_data, ranking):
     title = article_data.get("title")
-    url = article_data.get("url", "")
+    path = article_data.get("url", "")
+    url = f"https://thinkit.co.jp{path}"
 
     article_data_dict = {
         "site_id": site_id,
         "title": title,
         "ranking": ranking,
-        "url": f"https://thinkit.co.jp{url}",
+        "url": url,
     }
+    # 追加データ取得
+    if path:
+        image_url = await thinkit_api.fetch_article_image(url)
+        article_data_dict.update({"embed_html": image_url})
     return article_data_dict
 
 
-def techplus_data_mapping(site_id, article_data, ranking):
+async def techplus_data_mapping(site_id, article_data, ranking):
     title = article_data.get("title")
-    url = article_data.get("url", "")
+    path = article_data.get("url", "")
+    url = f"https://news.mynavi.jp{path}"
 
     article_data_dict = {
         "site_id": site_id,
         "title": title,
         "ranking": ranking,
-        "url": f"https://news.mynavi.jp{url}",
+        "url": url,
     }
+    # 追加データ取得
+    if path:
+        image_url = await techplus_api.fetch_article_image(url)
+        article_data_dict.update({"embed_html": image_url})
     return article_data_dict
