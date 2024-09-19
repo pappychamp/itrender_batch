@@ -54,7 +54,7 @@ async def zenn_data_mapping(site_id, article_data, ranking):
         article_data_dict.update(
             {
                 "tags": [{"name": tag} for tag in unique_tags],
-                "embed_html": image_and_tag_dict.get("image_url"),
+                "image_url": image_and_tag_dict.get("image_url"),
             }
         )
 
@@ -69,6 +69,7 @@ async def youtube_data_mapping(site_id, video_data, ranking):
     published_at = snippet.get("publishedAt")
     url = f'https://www.youtube.com/watch?v={video_data.get("id","")}'
     embed_html = video_data.get("player").get("embedHtml")
+    image_url = snippet.get("thumbnails", {}).get("standard", {}).get("url")
     unique_tags = list(set(tags))
 
     video_data_dict = {
@@ -79,6 +80,7 @@ async def youtube_data_mapping(site_id, video_data, ranking):
         "url": url,
         "published_at": parser.parse(published_at),
         "embed_html": embed_html,
+        "image_url": image_url,
         "category": category_id,
     }
     return video_data_dict
@@ -103,7 +105,7 @@ async def qiita_data_mapping(site_id, article_data, ranking):
     # 追加データ取得
     if url:
         image_url = await qiita_api.fetch_article_image(url)
-        article_data_dict.update({"embed_html": image_url})
+        article_data_dict.update({"image_url": image_url})
     return article_data_dict
 
 
@@ -122,7 +124,7 @@ async def yahoo_data_mapping(site_id, article_data, ranking):
     # 追加データ取得
     if url:
         image_url = await yahoo_api.fetch_article_image(url)
-        article_data_dict.update({"embed_html": image_url})
+        article_data_dict.update({"image_url": image_url})
     return article_data_dict
 
 
@@ -140,7 +142,7 @@ async def thinkit_data_mapping(site_id, article_data, ranking):
     # 追加データ取得
     if path:
         image_url = await thinkit_api.fetch_article_image(url)
-        article_data_dict.update({"embed_html": image_url})
+        article_data_dict.update({"image_url": image_url})
     return article_data_dict
 
 
@@ -158,5 +160,5 @@ async def techplus_data_mapping(site_id, article_data, ranking):
     # 追加データ取得
     if path:
         image_url = await techplus_api.fetch_article_image(url)
-        article_data_dict.update({"embed_html": image_url})
+        article_data_dict.update({"image_url": image_url})
     return article_data_dict

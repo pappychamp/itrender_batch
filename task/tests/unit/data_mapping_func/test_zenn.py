@@ -23,7 +23,7 @@ async def test_data_mapping_zenn(mocker):
     assert sorted(mapped_data["tags"], key=lambda x: x["name"]) == sorted([{"name": tag} for tag in mock_image_and_tag["tags"]], key=lambda x: x["name"])
     assert mapped_data["url"] == f"https://zenn.dev{article_data_dict["path"]}"
     assert mapped_data["published_at"] == parser.parse(article_data_dict["published_at"])
-    assert mapped_data["embed_html"] == "https://test_image"
+    assert mapped_data["image_url"] == "https://test_image"
 
 
 # pathが空の場合
@@ -37,5 +37,5 @@ async def test_data_mapping_zenn_empty_path(mocker):
     # data_mapping_funcにzenn_data_mappingを使用
     mapped_data = await zenn_data_mapping(site_id, article_data_dict, ranking)
     # データをチェック
-    assert "embed_html" not in mapped_data
+    assert "image_url" not in mapped_data
     assert "tags" not in mapped_data

@@ -57,6 +57,7 @@ class TrendData(Base):
     published_at = Column(DateTime(timezone=True), nullable=True)
     url = Column(String(255), nullable=True)
     embed_html = Column(Text, nullable=True)
+    image_url = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), default=datetime.now(pytz.timezone("Asia/Tokyo")), nullable=False)
 
     site = relationship("Site", back_populates="trend_data")

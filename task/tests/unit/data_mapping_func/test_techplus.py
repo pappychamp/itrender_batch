@@ -21,7 +21,7 @@ async def test_data_mapping_techplus(mocker):
     assert mapped_data["title"] == article_data_dict["title"]
     assert mapped_data["ranking"] == ranking
     assert mapped_data["url"] == f"https://news.mynavi.jp{article_data_dict["url"]}"
-    assert mapped_data["embed_html"] == mock_image
+    assert mapped_data["image_url"] == mock_image
 
 
 # linkが空の場合
@@ -35,4 +35,4 @@ async def test_data_mapping_techplus_empty_url(mocker):
     mapped_data = await techplus_data_mapping(site_id, article_data_dict, ranking)
 
     # データをチェック
-    assert "embed_html" not in mapped_data
+    assert "image_url" not in mapped_data

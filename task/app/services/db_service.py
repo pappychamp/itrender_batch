@@ -25,6 +25,7 @@ async def create_trend_data(db_session, trend_data_list):
                 category=trend_data.get("category"),
                 url=trend_data.get("url"),
                 embed_html=trend_data.get("embed_html"),
+                image_url=trend_data.get("image_url"),
             )
             # db_session.add(new_data)
             # await db_session.flush()
