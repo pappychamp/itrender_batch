@@ -27,7 +27,7 @@ async def test_data_mapping_yahoo(mocker):
     assert mapped_data["ranking"] == ranking
     assert mapped_data["url"] == article_data_dict["url"]
     assert mapped_data["published_at"] == parser.parse(article_data_dict["published_at"])
-    assert mapped_data["embed_html"] == mock_image
+    assert mapped_data["image_url"] == mock_image
 
 
 # linkが空の場合
@@ -45,4 +45,4 @@ async def test_data_mapping_yahoo_empty_url(mocker):
     mapped_data = await yahoo_data_mapping(site_id, article_data_dict, ranking)
 
     # データをチェック
-    assert "embed_html" not in mapped_data
+    assert "image_url" not in mapped_data

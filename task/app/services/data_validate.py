@@ -22,6 +22,7 @@ class TrendDataModel(BaseModel):
     published_at: Optional[datetime] = Field(None, description="The date and time when the item was published.")
     url: Optional[str] = Field(None, max_length=255, description="URL must be a string with a maximum length of 255 characters")
     embed_html: Optional[str] = Field(None, description="EmbedHtml must be a string")
+    image_url: Optional[str] = Field(None, description="ImageURL must be a string")
     tags: List[TagModel] = []
 
     # @field_validator("title")
