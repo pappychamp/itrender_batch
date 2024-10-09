@@ -1,10 +1,8 @@
 import sentry_sdk
-from sentry_sdk.integrations.logging import LoggingIntegration
-from sentry_sdk.integrations.asyncio import AsyncioIntegration
+from config import ENVIRONMENT, SENTRY_DSN
 from logs.logs_setting import logging
-import os
-
-SENTRY_DSN = os.environ.get("SENTRY_DSN")
+from sentry_sdk.integrations.asyncio import AsyncioIntegration
+from sentry_sdk.integrations.logging import LoggingIntegration
 
 
 def init_sentry():
@@ -13,6 +11,7 @@ def init_sentry():
     # SentryのDSNを設定
     sentry_sdk.init(
         dsn=SENTRY_DSN,
+        environment=ENVIRONMENT if ENVIRONMENT else "dev",
         traces_sample_rate=1.0,
         profiles_sample_rate=1.0,
         integrations=[

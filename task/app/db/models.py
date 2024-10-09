@@ -4,7 +4,7 @@ from datetime import datetime
 
 import pytz
 from db.setting import Base, Session
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Table, Text
+from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String, Table, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
@@ -45,6 +45,11 @@ class Tag(Base):
         return f"<Tag(name={self.name})>"
 
 
+# 日本時間から日付を返す関数
+def jst_today():
+    return datetime.now(pytz.timezone("Asia/Tokyo")).date()
+
+
 # TrendDataモデル
 class TrendData(Base):
     __tablename__ = "trenddata"
@@ -58,7 +63,7 @@ class TrendData(Base):
     url = Column(String(255), nullable=True)
     embed_html = Column(Text, nullable=True)
     image_url = Column(Text, nullable=True)
-    created_at = Column(DateTime(timezone=True), default=datetime.now(pytz.timezone("Asia/Tokyo")), nullable=False)
+    created_at = Column(Date, default=jst_today, nullable=False)
 
     site = relationship("Site", back_populates="trend_data")
     tags = relationship(
