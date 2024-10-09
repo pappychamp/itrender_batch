@@ -1,15 +1,12 @@
-import os
-
 from aiogoogle import Aiogoogle
 from aiogoogle.auth.creds import ApiKey
-
-API_KEY = os.environ.get("YOUTUBE_API_KEY")
+from config import YOUTUBE_API_KEY
 
 
 class YoutubeAPI:
 
     def __init__(self):
-        self.api_key = ApiKey(API_KEY)
+        self.api_key = ApiKey(YOUTUBE_API_KEY)
         self.youtube_api_name = "youtube"
         self.youtube_api_version = "v3"
 

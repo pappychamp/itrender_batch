@@ -1,12 +1,10 @@
 import asyncio
-import os
 import re
 
 import aiohttp
 import feedparser
 from bs4 import BeautifulSoup
-
-ACCESS_TOKEN = os.environ.get("QIITA_ACCESS_TOKEN")
+from config import QIITA_ACCESS_TOKEN
 
 
 class QiitaAPI:
@@ -14,7 +12,7 @@ class QiitaAPI:
     def __init__(self) -> None:
         self.rss_url = "https://qiita.com/popular-items/feed"
         self.api_url = "https://qiita.com/api/v2"
-        self.headers = {"Authorization": f"Bearer {ACCESS_TOKEN}"}
+        self.headers = {"Authorization": f"Bearer {QIITA_ACCESS_TOKEN}"}
 
     async def fetch_article(self):
         """
