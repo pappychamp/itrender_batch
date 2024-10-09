@@ -10,6 +10,8 @@ env/
 # ログファイル
 *.log
 # カバレッジレポート
+pytest.xml
+pytest-coverage.txt
 coverage.xml
 # キャッシュ
 .pytest_cache/
