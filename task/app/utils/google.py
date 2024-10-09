@@ -1,6 +1,5 @@
 import asyncio
 
-import aiohttp
 import matplotlib.pyplot as plt
 import pandas as pd
 from pytrends.request import TrendReq
