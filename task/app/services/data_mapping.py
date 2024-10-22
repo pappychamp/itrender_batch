@@ -110,21 +110,24 @@ async def qiita_data_mapping(site_id, article_data, ranking):
 
 
 async def yahoo_data_mapping(site_id, article_data, ranking):
-    title = article_data.get("title")
     url = article_data.get("url", "")
     published_at = article_data.get("published_at")
 
     article_data_dict = {
         "site_id": site_id,
-        "title": title,
         "ranking": ranking,
         "url": url,
         "published_at": parser.parse(published_at),
     }
     # 追加データ取得
     if url:
-        image_url = await yahoo_api.fetch_article_image(url)
-        article_data_dict.update({"image_url": image_url})
+        title_image_url_data = await yahoo_api.fetch_article_title_and_image(url)
+        article_data_dict.update(
+            {
+                "title": title_image_url_data.get("title"),
+                "image_url": title_image_url_data.get("image_url"),
+            }
+        )
     return article_data_dict
 
 

@@ -32,7 +32,7 @@ class YahooAPI:
                     response.raise_for_status()
                     html = await response.text()
                     soup = BeautifulSoup(html, "html.parser")
-                    articles = soup.find_all("a", class_="newsFeed_item_link")
+                    articles = soup.find_all("li", class_=re.compile(r"newsFeed_item"))
                     if articles:
                         pass
                     else:
@@ -40,7 +40,11 @@ class YahooAPI:
 
                     data = []
                     for article in articles:
-                        url = article["href"]
+                        a_tag = article.find("a")
+                        if a_tag:
+                            url = a_tag["href"]
+                        else:
+                            raise ValueError("a_tagがありません")
                         time_element = article.find("time")
                         if time_element:
                             time = time_element.get_text()
@@ -48,19 +52,12 @@ class YahooAPI:
                         else:
                             continue
 
-                        title_element = article.find(class_="newsFeed_item_title")
-                        if title_element:
-                            # stripで空白文字（半角スペース、タブ、改行など）を削除。replaceで全角(\u3000)を半角スペースに置き換える
-                            title = title_element.get_text(strip=True).replace("\u3000", " ")
-                        else:
-                            continue
-
-                        data.append({"title": title, "url": url, "published_at": published_at})
+                        data.append({"url": url, "published_at": published_at})
                     return {"articles": data}
             except Exception:
                 raise
 
-    async def fetch_article_image(self, url) -> str | None:
+    async def fetch_article_title_and_image(self, url) -> str | None:
         """
         スクレイピングによるimageの取得
         """
@@ -70,19 +67,30 @@ class YahooAPI:
 
                     response.raise_for_status()
                     html = await response.text()
+
                     soup = BeautifulSoup(html, "html.parser")
+                    title_element = soup.find("article") and soup.find("article").find("header") and soup.find("article").find("header").find("h1")
+                    if title_element:
+                        # stripで空白文字（半角スペース、タブ、改行など）を削除。replaceで全角(\u3000)を半角スペースに置き換える
+                        title = title_element.get_text(strip=True).replace("\u3000", " ")
+                    else:
+                        raise ValueError("title_elementデータの中身が空です")
+
                     ogp_image = soup.find("meta", attrs={"property": "og:image"})
                     if ogp_image:
-                        return ogp_image.get("content")
+                        image_url = ogp_image.get("content")
                     else:
-                        return
+                        image_url = None
+                    article_data = {"title": title, "image_url": image_url}
+                    return article_data
             except Exception:
                 raise
 
 
 async def main():
     instance = YahooAPI()
-    a = await instance.fetch_article_image("https://news.yahoo.co.jp/articles/efeb7c713a6f026f6a275966f5b7e41de5392b1b")
+    # a = await instance.fetch_article_title_and_image("https://news.yahoo.co.jp/articles/ad334290b20b944a967d19af396855201329c9c2")
+    a = await instance.fetch_article()
     print(a)
 
 
