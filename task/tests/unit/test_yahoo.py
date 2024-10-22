@@ -18,14 +18,14 @@ async def test_yahoo_fetch_article_success(yahoo_api):
     sample_html = """
         <html>
             <body>
-                <a class="newsFeed_item_link" href="https://news.yahoo.co.jp/articles/sample">
+                <li class="newsFeed_item">
+                    <a  href="https://news.yahoo.co.jp/articles/sample"></a>
                     <time class="sc-1hy2mez-3 gNVspC">8/16(金) 15:01</time>
-                    <div class="newsFeed_item_title">サンプル記事タイトル0</div>
-                </a>
-                <a class="newsFeed_item_link" href="https://news.yahoo.co.jp/articles/sample">
+                </li>
+                <li class="newsFeed_item">
+                    <a  href="https://news.yahoo.co.jp/articles/sample"></a>
                     <time class="sc-1hy2mez-3 gNVspC">8/16 15:01</time>
-                    <div class="newsFeed_item_title">サンプル記事タイトル1　aa</div>
-                </a>
+                </li>
             </body>
         </html>
         """
@@ -36,45 +36,8 @@ async def test_yahoo_fetch_article_success(yahoo_api):
         response = await yahoo_api.fetch_article()
     assert response == {
         "articles": [
-            {"title": "サンプル記事タイトル0", "url": "https://news.yahoo.co.jp/articles/sample", "published_at": "2024-08-16 15:01:00.000000 +0900"},
-            {"title": "サンプル記事タイトル1 aa", "url": "https://news.yahoo.co.jp/articles/sample", "published_at": "2024-08-16 15:01:00.000000 +0900"},
-        ]
-    }
-
-
-@pytest.mark.asyncio
-async def test_yahoo_fetch_article_no_newsFeed_item_title_class_skip(yahoo_api):
-    """
-    fetch_articleメソッドのnewsFeed_item_titleがない場合スキップ
-    """
-    # サンプルHTMLを用意
-    sample_html = """
-        <html>
-            <body>
-                <a class="newsFeed_item_link" href="https://news.yahoo.co.jp/articles/sample">
-                    <time class="sc-1hy2mez-3 gNVspC">8/16(金) 15:01</time>
-                    <div class="newsFeed_item_title">サンプル記事タイトル0</div>
-                </a>
-                <a class="newsFeed_item_link" href="https://news.yahoo.co.jp/articles/sample">
-                    <time class="sc-1hy2mez-3 gNVspC">8/16(金) 15:01</time>
-                    <div>サンプル記事タイトル1</div>
-                </a>
-                <a class="newsFeed_item_link" href="https://news.yahoo.co.jp/articles/sample">
-                    <time class="sc-1hy2mez-3 gNVspC">8/16(金) 15:01</time>
-                    <div class="newsFeed_item_title">サンプル記事タイトル2</div>
-                </a>
-            </body>
-        </html>
-        """
-    with aioresponses() as m:
-        # payloadはJSONデータを返すときに使用するものでありHTMLコンテンツを返すにはbodyを使う必要がある
-        m.get("https://news.yahoo.co.jp/ranking/access/news/it-science", body=sample_html)
-        # テスト
-        response = await yahoo_api.fetch_article()
-    assert response == {
-        "articles": [
-            {"title": "サンプル記事タイトル0", "url": "https://news.yahoo.co.jp/articles/sample", "published_at": "2024-08-16 15:01:00.000000 +0900"},
-            {"title": "サンプル記事タイトル2", "url": "https://news.yahoo.co.jp/articles/sample", "published_at": "2024-08-16 15:01:00.000000 +0900"},
+            {"url": "https://news.yahoo.co.jp/articles/sample", "published_at": "2024-08-16 15:01:00.000000 +0900"},
+            {"url": "https://news.yahoo.co.jp/articles/sample", "published_at": "2024-08-16 15:01:00.000000 +0900"},
         ]
     }
 
@@ -88,13 +51,13 @@ async def test_yahoo_fetch_article_no_time_tag_skip(yahoo_api):
     sample_html = """
         <html>
             <body>
-                <a class="newsFeed_item_link" href="https://news.yahoo.co.jp/articles/sample">
+                <li class="newsFeed_item">
+                    <a  href="https://news.yahoo.co.jp/articles/sample"></a>
                     <time class="sc-1hy2mez-3 gNVspC">8/16(金) 15:01</time>
-                    <div class="newsFeed_item_title">サンプル記事タイトル0</div>
-                </a>
-                <a class="newsFeed_item_link" href="https://news.yahoo.co.jp/articles/sample">
-                    <div class="newsFeed_item_title">サンプル記事タイトル1</div>
-                </a>
+                </li>
+                <li class="newsFeed_item">
+                    <a  href="https://news.yahoo.co.jp/articles/sample"></a>
+                </li>
             </body>
         </html>
         """
@@ -105,15 +68,15 @@ async def test_yahoo_fetch_article_no_time_tag_skip(yahoo_api):
         response = await yahoo_api.fetch_article()
     assert response == {
         "articles": [
-            {"title": "サンプル記事タイトル0", "url": "https://news.yahoo.co.jp/articles/sample", "published_at": "2024-08-16 15:01:00.000000 +0900"},
+            {"url": "https://news.yahoo.co.jp/articles/sample", "published_at": "2024-08-16 15:01:00.000000 +0900"},
         ]
     }
 
 
 @pytest.mark.asyncio
-async def test_yahoo_fetch_article_no_a_tag_skip(yahoo_api):
+async def test_yahoo_fetch_article_no_li_tag_skip(yahoo_api):
     """
-    fetch_articleメソッドのaタグがない場合ValueError
+    fetch_articleメソッドのliタグがない場合ValueError
     """
     # サンプルHTMLを用意
     sample_html = """
@@ -132,6 +95,29 @@ async def test_yahoo_fetch_article_no_a_tag_skip(yahoo_api):
 
 
 @pytest.mark.asyncio
+async def test_yahoo_fetch_article_no_a_tag_skip(yahoo_api):
+    """
+    fetch_articleメソッドのaタグがない場合ValueError
+    """
+    # サンプルHTMLを用意
+    sample_html = """
+        <html>
+            <body>
+                <li class="newsFeed_item">
+                    <time class="sc-1hy2mez-3 gNVspC">8/16(金) 15:01</time>
+                </li>
+            </body>
+        </html>
+        """
+    with aioresponses() as m:
+        # payloadはJSONデータを返すときに使用するものでありHTMLコンテンツを返すにはbodyを使う必要がある
+        m.get("https://news.yahoo.co.jp/ranking/access/news/it-science", body=sample_html)
+        # テスト
+        with pytest.raises(ValueError, match="a_tagがありません"):
+            await yahoo_api.fetch_article()
+
+
+@pytest.mark.asyncio
 async def test_yahoo_fetch_article_exception(yahoo_api):
     """
     fetch_articleメソッドの例外発生時のテスト
@@ -146,9 +132,9 @@ async def test_yahoo_fetch_article_exception(yahoo_api):
 
 
 @pytest.mark.asyncio
-async def test_fetch_article_image_success(yahoo_api):
+async def test_fetch_article_title_and_image_success(yahoo_api):
     """
-    fetch_article_imageメソッドの正常テスト
+    fetch_article_title_and_imageメソッドの正常テスト
     """
     # サンプルURLを用意
     sample_url = "https://yahoo.com/test/items/test"
@@ -158,6 +144,11 @@ async def test_fetch_article_image_success(yahoo_api):
             <head>
                 <meta property="og:image" content="test_content">
             </head>
+            <article>
+                <header>
+                    <h1>test title</h1>
+                </header>
+            </article>
         </html>
         """
 
@@ -165,14 +156,14 @@ async def test_fetch_article_image_success(yahoo_api):
         # payloadはJSONデータを返すときに使用するものでありHTMLコンテンツを返すにはbodyを使う必要がある
         m.get(sample_url, body=sample_html)
         # テスト
-        response = await yahoo_api.fetch_article_image(sample_url)
-    assert response == "test_content"
+        response = await yahoo_api.fetch_article_title_and_image(sample_url)
+    assert response == {"title": "test title", "image_url": "test_content"}
 
 
 @pytest.mark.asyncio
-async def test_fetch_article_image_no_a_tag(yahoo_api):
+async def test_fetch_article_title_and_image_no_meta_tag(yahoo_api):
     """
-    fetch_article_imageメソッドのmetaタグがない場合の正常テスト
+    fetch_article_title_and_imageメソッドのmetaタグがない場合の正常テスト
     """
     # サンプルURLを用意
     sample_url = "https://yahoo.com/test/items/test"
@@ -182,6 +173,11 @@ async def test_fetch_article_image_no_a_tag(yahoo_api):
             <head>
                 <metas property="og:image" content="test_content">
             </head>
+            <article>
+                <header>
+                    <h1>test title</h1>
+                </header>
+            </article>
         </html>
         """
 
@@ -189,14 +185,40 @@ async def test_fetch_article_image_no_a_tag(yahoo_api):
         # payloadはJSONデータを返すときに使用するものでありHTMLコンテンツを返すにはbodyを使う必要がある
         m.get(sample_url, body=sample_html)
         # テスト
-        response = await yahoo_api.fetch_article_image(sample_url)
-    assert response is None
+        response = await yahoo_api.fetch_article_title_and_image(sample_url)
+    assert response == {"title": "test title", "image_url": None}
 
 
 @pytest.mark.asyncio
-async def test_fetch_article_image_exception(yahoo_api):
+async def test_fetch_article_title_and_image_no_title_element(yahoo_api):
     """
-    fetch_article_imageメソッドの例外発生時のテスト
+    fetch_article_title_and_imageメソッドのtitle_elementがない場合の異常テスト
+    """
+    # サンプルURLを用意
+    sample_url = "https://yahoo.com/test/items/test"
+    # サンプルHTMLを用意
+    sample_html = """
+        <html>
+            <head>
+                <metas property="og:image" content="test_content">
+            </head>
+            <article>
+            </article>
+        </html>
+        """
+
+    with aioresponses() as m:
+        # payloadはJSONデータを返すときに使用するものでありHTMLコンテンツを返すにはbodyを使う必要がある
+        m.get(sample_url, body=sample_html)
+        # テスト
+        with pytest.raises(ValueError, match="title_elementデータの中身が空です"):
+            await yahoo_api.fetch_article_title_and_image(sample_url)
+
+
+@pytest.mark.asyncio
+async def test_fetch_article_title_and_image_exception(yahoo_api):
+    """
+    fetch_article_title_and_imageメソッドの例外発生時のテスト
     """
     sample_url = "https://yahoo.com/test/items/test"
 
@@ -204,4 +226,4 @@ async def test_fetch_article_image_exception(yahoo_api):
         m.get(sample_url, exception=aiohttp.ClientError())
         # テスト
         with pytest.raises(aiohttp.ClientError):
-            await yahoo_api.fetch_article_image(sample_url)
+            await yahoo_api.fetch_article_title_and_image(sample_url)
